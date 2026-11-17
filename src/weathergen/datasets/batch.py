@@ -28,7 +28,7 @@ class SampleMetaData:
 
 class Sample:
     # keys: stream name, values: SampleMetaData
-    meta_info: dict[str | SampleMetaData]
+    meta_info: dict[str, SampleMetaData]
 
     # data for all streams
     # keys: stream_name, values: StreamData
