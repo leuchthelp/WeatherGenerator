@@ -39,13 +39,13 @@ class Sample:
 
         # Pin StreamData objects in streams_data dict
         if hasattr(self, "streams_data") and isinstance(self.streams_data, dict):
-            for _stream_name, stream_data in self.streams_data.items():
+            for stream_data in self.streams_data.values():
                 if stream_data is not None and hasattr(stream_data, "pin_memory"):
                     stream_data.pin_memory()
 
         # Pin tensors in meta_info
         if hasattr(self, "meta_info") and isinstance(self.meta_info, dict):
-            for _key, meta_data in self.meta_info.items():
+            for meta_data in self.meta_info.values():
                 if isinstance(meta_data, SampleMetaData):
                     # Pin mask tensor
                     if meta_data.mask is not None and isinstance(meta_data.mask, torch.Tensor):
@@ -76,42 +76,42 @@ class Sample:
         """
         Check if sample is empty
         """
-        empty = (s.empty() if s is not None else True for _, s in self.streams_data.items())
+        empty = (s.empty() if s is not None else True for s in self.streams_data.values())
         return bool(np.array(empty).all())
 
     def is_nan(self) -> bool:
         """
         Check if sample is all NaN
         """
-        is_nan = (s.nan() if s is not None else False for _, s in self.streams_data.items())
+        is_nan = (s.nan() if s is not None else False for s in self.streams_data.values())
         return bool(np.array(is_nan).all())
 
     def sources_empty(self) -> bool:
         """
         Check if sources for sample are empty
         """
-        empty = (s.source_empty() if s is not None else True for _, s in self.streams_data.items())
+        empty = (s.source_empty() if s is not None else True for s in self.streams_data.values())
         return bool(np.array(empty).all())
 
     def sources_nan(self) -> bool:
         """
         Check if sources for sample are all NaN
         """
-        is_nan = (s.source_nan() if s is not None else False for _, s in self.streams_data.items())
+        is_nan = (s.source_nan() if s is not None else False for s in self.streams_data.values())
         return bool(np.array(is_nan).all())
 
     def targets_empty(self) -> bool:
         """
         Check if targets for sample are empty
         """
-        empty = (s.target_empty() if s is not None else True for _, s in self.streams_data.items())
+        empty = (s.target_empty() if s is not None else True for s in self.streams_data.values())
         return bool(np.array(empty).all())
 
     def targets_nan(self) -> bool:
         """
         Check if targets for sample are all NaN
         """
-        is_nan = (s.target_nan() if s is not None else False for _, s in self.streams_data.items())
+        is_nan = (s.target_nan() if s is not None else False for s in self.streams_data.values())
         return bool(np.array(is_nan).all())
 
     def add_stream_data(self, stream_name: str, stream_data: StreamData) -> None:
@@ -140,7 +140,7 @@ class Sample:
         """
         lens = [
             stream.get_num_source_steps()
-            for _, stream in self.streams_data.items()
+            for stream in self.streams_data.values()
             if stream is not None
         ]
         return min(lens) if len(lens) > 0 else 0
@@ -151,7 +151,7 @@ class Sample:
         """
         lens = [
             stream.get_num_target_steps()
-            for _, stream in self.streams_data.items()
+            for stream in self.streams_data.values()
             if stream is not None
         ]
         return min(lens) if len(lens) > 0 else 0
